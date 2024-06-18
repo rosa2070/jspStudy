@@ -17,6 +17,8 @@
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	
+	int totalRecord = 0;
+	
 	StringBuilder sbHtml = new StringBuilder();
 	
 	try {
@@ -26,10 +28,16 @@
 	
 		conn = dataSource.getConnection();
 	
-		String sql = "select seq, subject, writer, date_format(wdate, '%Y-%m-%d') wdate, hit from board1 order by seq desc";
+		String sql = "select seq, subject, writer, date_format(wdate, '%Y-%m-%d') wdate, hit, datediff(now(), wdate) wgap from board1 order by seq desc";
 		pstmt = conn.prepareStatement( sql );
 	
 		rs = pstmt.executeQuery();
+		
+		// select count(*) from board1;
+		rs.last();
+		totalRecord = rs.getRow();
+		rs.beforeFirst();
+		
 		while( rs.next() ) {
 			//System.out.println( rs.getString( "seq" ) );
 			String seq = rs.getString( "seq" );
@@ -37,11 +45,19 @@
 			String writer = rs.getString( "writer" );
 			String wdate = rs.getString( "wdate" );
 			String hit = rs.getString( "hit" );
+			int wgap = rs.getInt("wgap");
 			
 			sbHtml.append( "<tr>" );
 			sbHtml.append( "<td>&nbsp;</td>" );
 			sbHtml.append( "<td>" + seq + "</td>" );
-			sbHtml.append( "<td class='left'><a href='board_view1.jsp?seq=" + seq + "'>" + subject + "</a>&nbsp;<img src='../../images/icon_new.gif' alt='NEW'></td>" );
+			
+			sbHtml.append( "<td class='left'>" );
+			sbHtml.append( "	<a href='board_view1.jsp?seq=" + seq + "'>" + subject + "</a>" );
+			if (wgap == 0) {
+				sbHtml.append( "	&nbsp;<img src='../../images/icon_new.gif' alt='NEW'>" );
+			}
+			sbHtml.append( "</td>" );
+			
 			sbHtml.append( "<td>" + writer + "</td>" );
 			sbHtml.append( "<td>" + wdate + "</td>" );
 			sbHtml.append( "<td>" + hit + "</td>" );
@@ -79,7 +95,7 @@
 <div class="con_txt">
 	<div class="contents_sub">
 		<div class="board_top">
-			<div class="bold">총 <span class="txt_orange">1</span>건</div>
+			<div class="bold">총 <span class="txt_orange"><%= totalRecord %></span>건</div>
 		</div>
 
 		<!--게시판-->

@@ -1,13 +1,16 @@
-create table board1 (
-seq       int              not null     primary key auto_increment,
-subject   varchar(150)     not null,
-writer    varchar(12)      not null, 
-mail      varchar(50),
-password  varchar(42)      not null,
-content   varchar(2000),
-hit       int              not null,
-wip       varchar(15)      not null,
-wdate     datetime         not null
+CREATE TABLE board1 (
+	seq INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	subject VARCHAR(150) NOT NULL,
+	writer VARCHAR(12) NOT NULL,
+	mail VARCHAR(50),
+	password VARCHAR(42) NOT NULL,
+	content VARCHAR(2000),
+	hit INT NOT NULL,
+	wip VARCHAR(15) NOT NULL,
+	wdate DATETIME NOT NULL
 );
 
-insert into board1 values ( 0, '제목', '이름', 'test@test.com', password( '1234' ), '내용', 0, '000.000.000.000', now() );
+INSERT INTO board1 values (0, '제목', '이름', 'test@test.com', password('1234'), '내용', 0, '000.000.000.000', now());
+
+select datediff(now(), wdate) from board1;
+
