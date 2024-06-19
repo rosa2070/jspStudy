@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>Insert title here</title>
+<title>게시물 상세보기</title>
 <link rel="stylesheet" type="text/css" href="../../css/board.css">
 </head>
 
@@ -41,12 +41,12 @@
 
 		<div class="btn_area">
 			<div class="align_left">
-				<input type="button" value="목록" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_list1.jsp'" />
+				<input type="button" value="목록" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_list1.jsp?cpage=<%=request.getParameter("cpage") %>'" />
 			</div>
 			<div class="align_right">
-				<input type="button" value="수정" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_modify1.jsp'" />
-				<input type="button" value="삭제" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_delete1.jsp'" />
-				<input type="button" value="쓰기" class="btn_write btn_txt01" style="cursor: pointer;" onclick="location.href='board_write1.jsp'" />
+				<input type="button" value="수정" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_modify1.jsp?cpage=<%= request.getParameter("cpage") %>'" />
+				<input type="button" value="삭제" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_delete1.jsp?cpage=<%= request.getParameter("cpage") %>'" />
+				<input type="button" value="쓰기" class="btn_write btn_txt01" style="cursor: pointer;" onclick="location.href='board_write1.jsp?cpage=<%= request.getParameter("cpage") %>'" />
 			</div>
 		</div>	
 		<!--//게시판-->

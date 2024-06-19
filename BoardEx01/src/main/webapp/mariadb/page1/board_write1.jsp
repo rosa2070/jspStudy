@@ -1,5 +1,12 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	
+<%
+	request.setCharacterEncoding("utf-8");
+
+	String cpage = request.getParameter("cpage");
+%>	
+	
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,30 +15,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <title>Insert title here</title>
 <link rel="stylesheet" type="text/css" href="../../css/board.css">
-<script type="text/javascript">
-	window.onload = function() {
-		document.getElementById( 'wbtn' ).onclick = function() {
-			//alert( 'click' );
-			if( document.wfrm.info.checked == false ) {
-				alert( '동의하여야 합니다.' );
-				return false;
-			}
-			if( document.wfrm.writer.value.trim() == '' ) {
-				alert( '글쓴이를 입력하셔야 합니다.' );
-				return false;
-			}
-			if( document.wfrm.subject.value.trim() == '' ) {
-				alert( '제목을 입력하셔야 합니다.' );
-				return false;
-			}
-			if( document.wfrm.password.value.trim() == '' ) {
-				alert( '비밀번호를 입력하셔야 합니다.' );
-				return false;
-			}
-			document.wfrm.submit();
-		};
-	};
-</script>
 </head>
 
 <body>
@@ -42,7 +25,7 @@
 </div>
 <div class="con_menu"></div>
 <div class="con_txt">
-	<form action="./board_write1_ok.jsp" method="post" name="wfrm">
+	<form action="" method="post" name="">
 		<div class="contents_sub">	
 			<!--게시판-->
 			<div class="board_write">
@@ -92,10 +75,10 @@
 			
 			<div class="btn_area">
 				<div class="align_left">
-					<input type="button" value="목록" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_list1.jsp'" />
+					<input type="button" value="목록" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_list1.jsp?cpage=<%=cpage %>'" />
 				</div>
 				<div class="align_right">
-					<input type="button" id="wbtn" value="쓰기" class="btn_write btn_txt01" style="cursor: pointer;" />
+					<input type="button" value="쓰기" class="btn_write btn_txt01" style="cursor: pointer;" />
 				</div>
 			</div>
 			<!--//게시판-->

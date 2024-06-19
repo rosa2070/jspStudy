@@ -48,8 +48,8 @@
 			
 			<div class="btn_area">
 				<div class="align_left">
-					<input type="button" value="목록" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_list1.jsp'" />
-					<input type="button" value="보기" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_view1.jsp'" />
+					<input type="button" value="목록" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_list1.jsp?cpage=<%=request.getParameter("cpage") %>'" />
+					<input type="button" value="보기" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_view1.jsp?cpage=<%=request.getParameter("cpage") %>'" />
 				</div>
 				<div class="align_right">
 					<input type="button" value="수정" class="btn_write btn_txt01" style="cursor: pointer;" />
