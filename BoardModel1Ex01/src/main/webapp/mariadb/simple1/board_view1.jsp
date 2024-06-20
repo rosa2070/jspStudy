@@ -12,58 +12,52 @@
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="java.sql.SQLException" %>
 
-<%	
+<%
+	request.setCharacterEncoding( "utf-8" );
+
+	String seq = request.getParameter( "seq" );
+	
+	String subject = "";
+	String writer = "";
+	String mail = "";
+	String wip = "";
+	String wdate = "";
+	String hit = "";
+	String content = "";
+
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	
-	int totalRecord = 0;
-	
-	StringBuilder sbHtml = new StringBuilder();
-
 	try {
 		Context initCtx = new InitialContext();
 		Context envCtx = (Context)initCtx.lookup( "java:comp/env" );
 		DataSource dataSource = (DataSource)envCtx.lookup( "jdbc/mariadb2" );
-		
+	
 		conn = dataSource.getConnection();
-		String sql = "select seq, subject, writer, emot, date_format(wdate, '%Y-%m-%d') wdate, hit, datediff(now(), wdate) wgap from emot_board1 order by seq desc";
+	
+		// 조회수 증가
+		String sql = "update board1 set hit=hit+1 where seq=?";
 		pstmt = conn.prepareStatement( sql );
+		pstmt.setString( 1, seq );
 		
+		pstmt.executeUpdate();
+		
+		sql = "select subject, writer, mail, wip, wdate, hit, content from board1 where seq=?";
+		pstmt = conn.prepareStatement( sql );
+		pstmt.setString( 1, seq );
+	
 		rs = pstmt.executeQuery();
 		
-		rs.last();
-		totalRecord = rs.getRow();
-		rs.beforeFirst();
-		
-		rs = pstmt.executeQuery();
-		while( rs.next() ) {
-			String seq = rs.getString( "seq" );
-			String subject = rs.getString( "subject" );
-			String writer = rs.getString( "writer" );
-			String emot = rs.getString( "emot" );
-			String wdate = rs.getString( "wdate" );
-			String hit = rs.getString( "hit" );
-			int wgap = rs.getInt( "wgap" );
-			
-			sbHtml.append( "<tr>" );
-			sbHtml.append( "<td><img src='../../images/emoticon/emot" + emot + ".png' width='15' /></td>" );
-			sbHtml.append( "<td>" + seq + "</td>" );
-			sbHtml.append( "<td class='left'>" );
-			sbHtml.append( "	<a href='board_view1.jsp?seq=" + seq + "'>" + subject + "</a>&nbsp;" );
-			
-			if( wgap == 0 ) {
-				sbHtml.append( "	<img src='../../images/icon_new.gif' alt='NEW'>" );
-			}
-			
-			sbHtml.append( "</td>");
-			sbHtml.append( "<td>" + writer + "</td>" );
-			sbHtml.append( "<td>" + wdate + "</td>" );
-			sbHtml.append( "<td>" + hit + "</td>" );
-			sbHtml.append( "<td>&nbsp;</td>" );
-			sbHtml.append( "</tr>" );
+		if( rs.next() ) {
+			subject = rs.getString( "subject" );
+			writer = rs.getString( "writer" );
+			mail = rs.getString( "mail" );
+			wip = rs.getString( "wip" );
+			wdate = rs.getString( "wdate" );
+			hit = rs.getString( "hit" );
+			content = rs.getString( "content" ).replaceAll( "\n", "<br />" );
 		}
-		
 	} catch( NamingException e ) {
 		System.out.println( "[에러] " + e.getMessage() );
 	} catch( SQLException e ) {
@@ -93,38 +87,41 @@
 </div>
 <div class="con_txt">
 	<div class="contents_sub">
-		<div class="board_top">
-			<div class="bold">총 <span class="txt_orange"><%=totalRecord %></span>건</div>
-		</div>
-
 		<!--게시판-->
-		<div class="board">
+		<div class="board_view">
 			<table>
 			<tr>
-				<th width="3%">&nbsp;</th>
-				<th width="5%">번호</th>
-				<th>제목</th>
-				<th width="10%">글쓴이</th>
-				<th width="17%">등록일</th>
-				<th width="5%">조회</th>
-				<th width="3%">&nbsp;</th>
+				<th width="10%">제목</th>
+				<td width="60%"><%=subject %></td>
+				<th width="10%">등록일</th>
+				<td width="20%"><%=wdate %></td>
 			</tr>
-<!-- 시작 -->
-<%=sbHtml %>
-<!-- 끝  -->
-
+			<tr>
+				<th>글쓴이</th>
+				<td><%=writer %>(<%=mail %>)(<%=wip %>)</td>
+				<th>조회</th>
+				<td><%=hit %></td>
+			</tr>
+			<tr>
+				<td colspan="4" height="200" valign="top" style="padding: 20px; line-height: 160%"><%=content %></td>
+			</tr>
 			</table>
-		</div>	
+		</div>
 
 		<div class="btn_area">
+			<div class="align_left">
+				<input type="button" value="목록" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_list1.jsp'" />
+			</div>
 			<div class="align_right">
+				<input type="button" value="수정" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_modify1.jsp?seq=<%=seq %>'" />
+				<input type="button" value="삭제" class="btn_list btn_txt02" style="cursor: pointer;" onclick="location.href='board_delete1.jsp?seq=<%=seq %>'" />
 				<input type="button" value="쓰기" class="btn_write btn_txt01" style="cursor: pointer;" onclick="location.href='board_write1.jsp'" />
 			</div>
-		</div>
+		</div>	
 		<!--//게시판-->
 	</div>
 </div>
-<!--//하단 디자인 -->
+<!-- 하단 디자인 -->
 
 </body>
 </html>

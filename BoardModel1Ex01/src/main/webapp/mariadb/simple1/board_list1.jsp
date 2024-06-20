@@ -12,7 +12,7 @@
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="java.sql.SQLException" %>
 
-<%	
+<%
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
@@ -20,43 +20,44 @@
 	int totalRecord = 0;
 	
 	StringBuilder sbHtml = new StringBuilder();
-
+	
 	try {
 		Context initCtx = new InitialContext();
 		Context envCtx = (Context)initCtx.lookup( "java:comp/env" );
 		DataSource dataSource = (DataSource)envCtx.lookup( "jdbc/mariadb2" );
-		
+	
 		conn = dataSource.getConnection();
-		String sql = "select seq, subject, writer, emot, date_format(wdate, '%Y-%m-%d') wdate, hit, datediff(now(), wdate) wgap from emot_board1 order by seq desc";
+	
+		String sql = "select seq, subject, writer, date_format(wdate, '%Y-%m-%d') wdate, hit, datediff( now(), wdate ) wgap from board1 order by seq desc";
 		pstmt = conn.prepareStatement( sql );
-		
+	
 		rs = pstmt.executeQuery();
 		
+		// select count(*) from board1;
 		rs.last();
 		totalRecord = rs.getRow();
 		rs.beforeFirst();
 		
-		rs = pstmt.executeQuery();
 		while( rs.next() ) {
+			//System.out.println( rs.getString( "seq" ) );
 			String seq = rs.getString( "seq" );
 			String subject = rs.getString( "subject" );
 			String writer = rs.getString( "writer" );
-			String emot = rs.getString( "emot" );
 			String wdate = rs.getString( "wdate" );
 			String hit = rs.getString( "hit" );
 			int wgap = rs.getInt( "wgap" );
 			
 			sbHtml.append( "<tr>" );
-			sbHtml.append( "<td><img src='../../images/emoticon/emot" + emot + ".png' width='15' /></td>" );
+			sbHtml.append( "<td>&nbsp;</td>" );
 			sbHtml.append( "<td>" + seq + "</td>" );
+			
 			sbHtml.append( "<td class='left'>" );
-			sbHtml.append( "	<a href='board_view1.jsp?seq=" + seq + "'>" + subject + "</a>&nbsp;" );
-			
+			sbHtml.append( "	<a href='board_view1.jsp?seq=" + seq + "'>" + subject + "</a>" );
 			if( wgap == 0 ) {
-				sbHtml.append( "	<img src='../../images/icon_new.gif' alt='NEW'>" );
+				sbHtml.append( "	&nbsp;<img src='../../images/icon_new.gif' alt='NEW'>" );
 			}
+			sbHtml.append( "</td>" );
 			
-			sbHtml.append( "</td>");
 			sbHtml.append( "<td>" + writer + "</td>" );
 			sbHtml.append( "<td>" + wdate + "</td>" );
 			sbHtml.append( "<td>" + hit + "</td>" );
@@ -109,10 +110,19 @@
 				<th width="5%">조회</th>
 				<th width="3%">&nbsp;</th>
 			</tr>
-<!-- 시작 -->
-<%=sbHtml %>
-<!-- 끝  -->
-
+			
+<%= sbHtml.toString() %>			
+			<!--
+			<tr>
+				<td>&nbsp;</td>
+				<td>1</td>
+				<td class="left"><a href="board_view1.jsp">adfas</a>&nbsp;<img src="../../images/icon_new.gif" alt="NEW"></td>
+				<td>asdfa</td>
+				<td>2017-01-31</td>
+				<td>6</td>
+				<td>&nbsp;</td>
+			</tr>
+  			-->
 			</table>
 		</div>	
 

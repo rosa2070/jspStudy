@@ -13,14 +13,26 @@
 <%@ page import="java.sql.SQLException" %>
 
 <%	
+	request.setCharacterEncoding("utf-8");
+	
+	int cpage = 1;// 받아오는 값이 없으면 기본값 1 페이지
+	
+	if (request.getParameter("cpage") != null && !request.getParameter("cpage").equals("")) { // cpage값이 있으면 page값을 쓴다
+		cpage = Integer.parseInt(request.getParameter("cpage"));
+	}
+
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	
+	// 한페이지당 보여줄 게시글 수
+	int recordPerPage = 10;
+	int totalPage = 1;
 	int totalRecord = 0;
+	int blockPerPage = 5;
 	
 	StringBuilder sbHtml = new StringBuilder();
-
+	
 	try {
 		Context initCtx = new InitialContext();
 		Context envCtx = (Context)initCtx.lookup( "java:comp/env" );
@@ -36,8 +48,13 @@
 		totalRecord = rs.getRow();
 		rs.beforeFirst();
 		
-		rs = pstmt.executeQuery();
-		while( rs.next() ) {
+		// 현재 페이지에서 처음으로 가져올 데이터의 인덱스를 계산
+		int skip = (cpage - 1) * recordPerPage;
+		if (skip != 0)  rs.absolute(skip);
+		
+	    totalPage = ( ( totalRecord -1 ) / recordPerPage) + 1 ;
+		
+	    for(int i = 0; i < recordPerPage && rs.next(); i++){
 			String seq = rs.getString( "seq" );
 			String subject = rs.getString( "subject" );
 			String writer = rs.getString( "writer" );
